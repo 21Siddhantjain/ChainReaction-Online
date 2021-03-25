@@ -55,10 +55,11 @@ def display_rect(color, start_x, start_y, end_x, end_y):
 def display_name():
     size = 22
     x = 75
-    message_display('Siddhant', x, 100, size)
-    message_display('Siddhant', x, 130, size)
-    message_display('Siddhant', x, 160, size)
-    message_display('Siddhant', x, 190, size)
+    message_display('Players', x, 70, 30)
+    message_display('Yashi', x, 120, size)
+    message_display('Yuvraj', x, 150, size)
+    message_display('Shrey', x, 180, size)
+    message_display('Siddhant', x, 210, size)
 
     pygame.display.update()
 
@@ -73,6 +74,14 @@ def get_block():
             y += 50
         x += 50
     return coordinates
+
+
+def get_cord():
+    a = get_block()
+    b = dict()
+    for i in a:
+        b[a[i]] = i
+    return b
 
 
 def display_board():
@@ -92,8 +101,26 @@ def display_board():
     pygame.display.update()
 
 
+def update_board():
+    x = 250
+    y = 50
+    line_width = 1
+    display_rect(black, x, y, 300, 450)
+
+    for i in range(8):
+        y += 50
+        display_rect(red, x, y, 300, line_width)
+    y = 50
+    for i in range(5):
+        x += 50
+        display_rect(red, x, y, line_width, 450)
+
+    pygame.display.update()
+
+
 def game_loop():
-    cord_dict = get_block()
+    mat_dict = get_block()
+    cord_dict = get_cord()
     x, y = (0, 0)
     move = []
     for i in range(9):
@@ -109,21 +136,27 @@ def game_loop():
             mouse = pygame.mouse.get_pos()
             click = pygame.mouse.get_pressed()
             if click[0] == 1:
+                display_board()
                 x, y = mouse
                 a = x % 50
                 b = y % 50
                 x, y = x-a, y-b
-                move_x, move_y = cord_dict[(x, y)]
-                if move[move_x][move_y] == 0:
-                    single_click(white, (x, y))
-                elif move[move_x][move_y] == 1:
-                    double_click(white, (x, y))
-                elif move[move_x][move_y] == 2:
-                    triple_click(white, (x, y))
-                else:
-                    pass
+                move_x, move_y = mat_dict[(x, y)]
                 move[move_x][move_y] += 1
-                pygame.display.update((x, y, 50, 50))
+                for i in range(9):
+                    for j in range(6):
+                        if move[i][j] == 0:
+                            continue
+                        elif move[i][j] == 1:
+                            single_click(white, cord_dict[(i, j)])
+                        elif move[i][j] == 2:
+                            double_click(white, cord_dict[(i, j)])
+                        elif move[i][j] == 3:
+                            triple_click(white, cord_dict[(i, j)])
+
+                        else:
+                            pass
+                pygame.display.update()
 
 
 game_loop()
